@@ -3,18 +3,18 @@
   "version": "4.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "db:migrate": "tsx scripts/migrate.ts",
-    "db:seed": "tsx scripts/seed-v2.ts",
+    "db:migrate": "tsx --env-file=.env scripts/migrate.ts",
+    "db:seed": "tsx --env-file=.env scripts/seed-v2.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
-    "db:upgrade-v3": "tsx scripts/migrate.ts",
-    "db:upgrade-v4": "tsx scripts/migrate.ts",
-    "db:upgrade-v4.1": "tsx scripts/migrate.ts",
-    "db:reset-testing-v4.1": "tsx scripts/reset-testing-data-v4-1.ts",
-    "db:prepare-production-v4.1": "tsx scripts/reset-testing-data-v4-1.ts && tsx scripts/seed-v2.ts"
+    "db:upgrade-v3": "tsx --env-file=.env scripts/migrate.ts",
+    "db:upgrade-v4": "tsx --env-file=.env scripts/migrate.ts",
+    "db:upgrade-v4.1": "tsx --env-file=.env scripts/migrate.ts",
+    "db:reset-testing-v4.1": "tsx --env-file=.env scripts/reset-testing-data-v4-1.ts",
+    "db:prepare-production-v4.1": "tsx --env-file=.env scripts/reset-testing-data-v4-1.ts && tsx --env-file=.env scripts/seed-v2.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

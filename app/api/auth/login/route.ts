@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { query } from "@/lib/db";
 import { createSession, Role } from "@/lib/auth";
+import { ensureFacultyRoster } from "@/lib/ensure-faculty";
 
 type U={id:number;username:string;password_hash:string;display_name:string;must_change_password:boolean;faculty_id:number|null;student_id:number|null;roles:string[]};
 export async function POST(req:Request){
+  await ensureFacultyRoster();
   const f=await req.formData();
   const username=String(f.get('username')||'').trim().toLowerCase();
   const password=String(f.get('password')||'');

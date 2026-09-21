@@ -160,6 +160,41 @@
       "email": null,
       "phone": null,
       "source": "FACULTY_MASTER"
+    },
+    {
+      "employee_id": "EC26030",
+      "name": "HARSHITHA H V",
+      "email": null,
+      "phone": null,
+      "source": "FACULTY_MASTER"
+    },
+    {
+      "employee_id": "EC26031",
+      "name": "TEJAS R HASBAVI",
+      "email": null,
+      "phone": null,
+      "source": "FACULTY_MASTER"
+    },
+    {
+      "employee_id": "EC26052",
+      "name": "SUSHAMA P M",
+      "email": null,
+      "phone": null,
+      "source": "FACULTY_MASTER"
+    },
+    {
+      "employee_id": "EC26056",
+      "name": "BHAVANA K Y",
+      "email": null,
+      "phone": null,
+      "source": "FACULTY_MASTER"
+    },
+    {
+      "employee_id": "EC26063",
+      "name": "BABU SAB",
+      "email": null,
+      "phone": null,
+      "source": "FACULTY_MASTER"
     }
   ],
   "students": [
@@ -4106,8 +4141,8 @@
     "program_code": "CSE",
     "program_name": "Computer Science and Engineering",
     "department": "CSE",
-    "team_min_size": 3,
-    "team_max_size": 4,
+    "team_min_size": 5,
+    "team_max_size": 6,
     "semester_guide_limit": 3,
     "overall_guide_limit": 6,
     "hod_employee_id": "EC23002"

@@ -17,13 +17,12 @@ async function roleId(code:string){return (await pool.query('SELECT id FROM role
 
 async function ensureFacultyUser(username:string,displayName:string,email:string|null,phone:string|null,roleLabel:string){
   const existing=(await pool.query('SELECT id FROM users_v2 WHERE username=$1',[username])).rows[0];
-  const pw='falcon@123';
-  const hash=await bcrypt.hash(pw,12);
   if(existing){
-    await pool.query(`UPDATE users_v2 SET display_name=$1,email=COALESCE($2,email),phone=COALESCE($3,phone),password_hash=$4,must_change_password=true,updated_at=NOW() WHERE id=$5`,[displayName,email,phone,hash,existing.id]);
-    credentials.push([roleLabel,username,displayName,pw,'YES','READY'].map(qcsv).join(','));
+    await pool.query(`UPDATE users_v2 SET display_name=$1,email=COALESCE($2,email),phone=COALESCE($3,phone),updated_at=NOW() WHERE id=$4`,[displayName,email,phone,existing.id]);
     return {id:Number(existing.id),isNew:false};
   }
+  const pw=randomTemporaryPassword();
+  const hash=await bcrypt.hash(pw,12);
   const u=(await pool.query(`INSERT INTO users_v2(username,password_hash,display_name,email,phone,must_change_password,is_active) VALUES($1,$2,$3,$4,$5,true,true) RETURNING id`,[username,hash,displayName,email,phone])).rows[0];
   credentials.push([roleLabel,username,displayName,pw,'YES','READY'].map(qcsv).join(','));
   return {id:Number(u.id),isNew:true};
@@ -75,7 +74,7 @@ async function main(){
   const semesters=[...new Set(seed.students.map(s=>Number(s.semester)))].sort((a,b)=>a-b);
   for(const sem of semesters){
     await pool.query(`INSERT INTO pbl_cycles_v2(academic_cycle_id,program_id,semester,team_min_size,team_max_size,status)
-      VALUES($1,$2,$3,$4,$5,'DRAFT') ON CONFLICT(academic_cycle_id,program_id,semester) DO NOTHING`,[cycle,program,sem,seed.defaults.team_min_size,seed.defaults.team_max_size]);
+      VALUES($1,$2,$3,$4,$5,'DRAFT') ON CONFLICT(academic_cycle_id,program_id,semester) DO UPDATE SET team_min_size=EXCLUDED.team_min_size, team_max_size=EXCLUDED.team_max_size`,[cycle,program,sem,seed.defaults.team_min_size,seed.defaults.team_max_size]);
   }
 
   const sectionIds=new Map<string,number>();
