@@ -20,7 +20,12 @@ export async function POST(req:Request){
   const valid=!!u&&await bcrypt.compare(password,u.password_hash);
   await query(`INSERT INTO login_attempts_v2(username,ip_address,succeeded) VALUES($1,$2,$3)`,[username,ip||null,valid]);
   if(!valid)return NextResponse.redirect(new URL('/login?error=1',req.url),303);
-  await query(`UPDATE users_v2 SET last_login_at=NOW() WHERE id=$1`,[u.id]);
-  await createSession({id:u.id,username:u.username,displayName:u.display_name,roles:u.roles as Role[],facultyId:u.faculty_id||undefined,studentId:u.student_id||undefined,mustChangePassword:u.must_change_password});
-  return NextResponse.redirect(new URL(u.must_change_password?'/account/change-password':'/dashboard',req.url),303);
+
+  const changedCount=(await query<{n:number}>(`SELECT COUNT(*)::int n FROM audit_logs_v2 WHERE user_id=$1 AND action='PASSWORD_CHANGED'`,[u.id]))[0]?.n||0;
+  const hasEverChangedPassword=changedCount>0;
+  const mustChange=Boolean(u.must_change_password||!hasEverChangedPassword);
+
+  await query(`UPDATE users_v2 SET last_login_at=NOW(), must_change_password=$1 WHERE id=$2`,[mustChange,u.id]);
+  await createSession({id:u.id,username:u.username,displayName:u.display_name,roles:u.roles as Role[],facultyId:u.faculty_id||undefined,studentId:u.student_id||undefined,mustChangePassword:mustChange});
+  return NextResponse.redirect(new URL(mustChange?'/account/change-password':'/dashboard',req.url),303);
 }

@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
+import { redirect } from "next/navigation";
 
 export type Role = "HOD" | "PBL_COORDINATOR" | "FACULTY" | "STUDENT";
 export type SessionUser = {
@@ -39,6 +40,9 @@ export async function getSession(): Promise<SessionUser | null> {
 export async function requireAnyRole(roles: Role[]) {
   const user = await getSession();
   if (!user || !user.roles.some(r => roles.includes(r))) return null;
+  if (user.mustChangePassword) {
+    redirect('/account/change-password');
+  }
   return user;
 }
 

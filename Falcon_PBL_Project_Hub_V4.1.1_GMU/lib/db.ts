@@ -1,4 +1,9 @@
 import { Pool, QueryResultRow } from 'pg';
+if (!process.env.DATABASE_URL) {
+  try {
+    process.loadEnvFile();
+  } catch {}
+}
 const globalForDb=globalThis as unknown as {pool?:Pool};
 export const pool=globalForDb.pool??new Pool({
   connectionString:process.env.DATABASE_URL,
