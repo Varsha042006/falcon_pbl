@@ -35,6 +35,6 @@ export default async function NewTeam({searchParams}:{searchParams:Promise<{cycl
       <button className="btn secondary">Load</button>
     </form>
     {cycle&&<div className="notice">Team rule: minimum <b>{cycle.team_min_size}</b>, maximum <b>{cycle.team_max_size}</b>. Students are restricted to this academic cycle and Semester {cycle.semester}; students already in a team are hidden.</div>}
-    {cycle&&<StudentTeamSelector students={students} pblCycleId={cycleId} semester={Number(cycle.semester)} minSize={Number(cycle.team_min_size)} maxSize={Number(cycle.team_max_size)}/>} 
+    {cycle&&<StudentTeamSelector students={students} pblCycleId={cycleId} semester={Number(cycle.semester)} minSize={Number(cycle.team_min_size) || 4} maxSize={Number(cycle.team_max_size) || 6}/>} 
   </div></section>;
 }
